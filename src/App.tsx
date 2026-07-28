@@ -9,20 +9,35 @@ function App() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* Identité civil */}
-      <input {...register("prenom", { required: true, maxLength: 50 })} />
-      <input {...register("nom", { required: true, pattern: /^[A-Za-z]+$/i })} />
+      <label htmlFor="prenom">Prénom</label>
+      <input id="prenom" {...register("prenom", { required: true, maxLength: 50 })} />
 
-      <input type="email" {...register("email", {required: true, pattern: /\S+@\S+\.\S+/ })}/>
+      <label htmlFor="nom">Nom</label>
+      <input id="nom"{...register("nom", { required: true, pattern: /^[A-Za-z]+$/i })} />
+
+      <label htmlFor="email">Email</label>
+      <input id="email" type="email" {...register("email", { required: true, pattern: /\S+@\S+\.\S+/ })} />
 
       {/* Mot de passe de 10 caractères avec au moins 1 chiffre, des majuscules et minuscules, un caractère spécial */}
-      <input type="password" {...register("password", { required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/g})} />
-      
+      <label htmlFor="password">Votre mot de passe</label>
+      <input id="password" type="password" {...register("password", { 
+        required: true, 
+        pattern: { 
+          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/, 
+          message: "Le mot de passe doit faire au moins 10 caractères et contenir une minuscule, une majuscule, un chiffre et un caractère spécial (parmi @ $ ! % * ? &)." }
+          }
+          )} />
+
       {/* Age minimum requis de 18 ans */}
-      <input type="number" {...register("age", { required: true, max: 99, validate: (age) => {if(parseInt(age) < 18) return "Vous êtes mineur, vous ne pouvez pas vous inscrire";
-        // if(age === undefined) return true;
-      }})} />
+      <label htmlFor="age">Âge</label>
+      <input id="age" type="number" {...register("age", {
+        required: "Vous devez indiquer votre âge", max: 99, validate: (age) => {
+          if (parseInt(age) < 18) return "Vous êtes mineur, vous ne pouvez pas vous inscrire";
+        }
+      })} />
+      {errors.password && <p>{errors.password.message as string}</p>}
       {errors.age && <p>{errors.age.message as string}</p>}
-       
+
       <input type="submit" />
     </form>
   )
